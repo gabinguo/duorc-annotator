@@ -8,9 +8,6 @@ import memoryUtil from "./util/memoryUtil"
 import uuidv4 from "./util/uuid"
 
 
-
-const data_json_server = "http://localhost:3001/data/"
-
 function App() {
   const [progressStatus, setProgressStatus] = useState(888)
   const [answerStartPos, setAnswerStartPos] = useState(-1)
@@ -20,7 +17,7 @@ function App() {
 
 
   const req_single_example = (idx) => {
-    return axios.get(`${data_json_server+idx}`)
+    return axios.get(`/data/${idx}`)
   } 
 
   useEffect(() => {
