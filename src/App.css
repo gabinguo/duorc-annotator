@@ -1,38 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Poppins', sans-serif;
+}
+
+p,
+a,
+span {
+    font-family: 'Poppins', sans-serif;
+}
+
+table, th, td {
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+}
+
 .App {
+  padding: 20px 5%;
   text-align: center;
+  width: 100vw;
+  height: 100vh;
+  min-width: 1400px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.progress-bar{
+  padding: 0 40px;
+  width: 100%;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.main-title{
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
 }
 
-.App-link {
-  color: #61dafb;
+.main-title h1{
+  margin: 2px;
+  padding: 8px 0;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.content-display{
+  padding: 8px 16px;
+  min-width: 900px;
+}
+
+.answers{
+  height: 100%;
+  font-size: large;
+  font-weight: bold;
+}
+
+.answers > div:nth-child(1){
+  position: sticky;
+  top: 20px;
+}
+
+.answers > div:nth-child(2){
+  position: sticky;
+  top: max(48%, 300px);
+}
+
+.answers .ant-row{
+  height: 48%;
+  max-height: 300px;
+}
+
+.answer-in-dataset{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  color:  #81b214;
+  padding: 0px;
+}
+
+
+.answer-in-dataset .answer-in-dataset-header{
+  width: 100%;
+  border: 2px dashed rgba(0, 0, 0, 0.3);
+  border-left: 0;
+  border-right: 0;
+  padding: 4px 0;
+}
+
+.answer-in-dataset .answer-in-dataset-skip-button{
+  width: 100%;
+}
+
+.answer-in-dataset .answer-in-dataset-skip-button button{
+  background-color:  #81b214;
+  border-color: #81b214;
+}
+
+
+.answer-selected{
+  margin-top: 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  color: #1890FF;
+}
+
+
+.answer-selected .answer-selected-header{
+  width: 100%;
+  border: 2px dashed rgba(0, 0, 0, 0.3);
+  border-left: 0;
+  border-right: 0;
+  padding: 4px 0;
+}
+
+.answer-selected .answer-selected-submit-button{
+  width: 100%;
+}
+
+.annotation-status{
+  margin-top: 24px;
+  padding: 2px;
+  width: 100%;
+  height: 100%;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 2px;
+}
+
+.content-display, .answer-in-dataset, .answer-selected {
+  width: 100%;
+  height: 100%;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 2px 4px;
 }
