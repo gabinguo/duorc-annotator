@@ -1,12 +1,11 @@
 import React, {useState, useEffect} from "react"
 import './App.css';
 import 'antd/dist/antd.css';
-import { Row, Col, Space, Progress, Button, Spin, message} from "antd"
+import { Row, Col, Space, Progress, Button, Spin, message, notification} from "antd"
 import axios from "axios"
 import storageUtil from "./util/storageUtil";
 import memoryUtil from "./util/memoryUtil"
 import uuidv4 from "./util/uuid"
-
 
 function App() {
   const [progressStatus, setProgressStatus] = useState(888)
@@ -14,11 +13,34 @@ function App() {
   const [answerSelected, setAnswerSelected] = useState("")
   const [isFetching, setIsFetching] = useState(false)
   const [example, setExample] = useState({})
+  const [countAnnotated, setCountAnnotated] = useState(0)
+  const [passed, setPassed] = useState(0)
+  const [failed, setFailed] = useState(0)
 
 
   const req_single_example = (idx) => {
     return axios.get(`/data/${idx}`)
   } 
+
+  const req_overall_count = () => {
+    return axios.get("/overview")
+  }
+
+  const update_overall_count = (count) => {
+    return axios.post("/overview", JSON.stringify({"count": count}), {
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    })
+  }
+
+  const send_single_example = (payload) => {
+    return axios.post("/annotations", JSON.stringify(payload), {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+  }
 
   useEffect(() => {
     if (!storageUtil.getTmpKey()){
@@ -28,12 +50,35 @@ function App() {
     }
     memoryUtil.tmp_key = storageUtil.getTmpKey()
     setIsFetching(true)
-    setProgressStatus(888)
     let randInt = Math.floor(Math.random() * 60000);
+    req_overall_count().then(res => {
+      if(res){
+        setProgressStatus(res["data"]["count"])
+      }
+    })
     req_single_example(randInt).then(res => {
       if (res){
         setExample(res["data"])
         setIsFetching(false)
+      }
+    })
+
+    axios.get(`/annotations?user_id=${memoryUtil.tmp_key}`).then(res => {
+      if(res){
+        let pass = 0
+        let fail = 0
+        res["data"].forEach(example => {
+          const context = example["paragraphs"][0]["context"]
+          const {text, answer_start} = example["paragraphs"][0]["qas"][0]["answers"][0]
+          if (context.substring(answer_start, answer_start + text.length) === text){
+            pass += 1
+          } else {
+            fail += 1
+          }
+        })
+        setPassed(pass)
+        setFailed(fail)
+        setCountAnnotated(res["data"].length)
       }
     })
   }, [])
@@ -58,6 +103,7 @@ function App() {
       if(res){
         setExample(res["data"])
         setIsFetching(false)
+        setAnswerSelected("")
       }
     })
   }
@@ -70,6 +116,7 @@ function App() {
     }
     const payload = {
       title,
+      "user_id": memoryUtil.tmp_key,
       "paragraphs": [
         {
           "context": plot,
@@ -85,7 +132,43 @@ function App() {
         }
       ]
     }
-    console.log(payload)
+    send_single_example(payload).then(res => {
+      if (res){
+        update_overall_count(progressStatus + 1)
+        setProgressStatus(progressStatus + 1)
+        notification.success({
+          message: "Congratulations 🎉",
+          description: "Succesfully added one annotation : )",
+          placement: "bottomRight"
+        })
+        setIsFetching(true)
+        req_single_example(Math.floor(Math.random() * 60000)).then(res => {
+          if(res){
+            setExample(res["data"])
+            setIsFetching(false)
+            setAnswerSelected("")
+          }
+        })
+        axios.get(`/annotations?user_id=${memoryUtil.tmp_key}`).then(res => {
+          if(res){
+            let pass = 0
+            let fail = 0
+            res["data"].forEach(example => {
+              const context = example["paragraphs"][0]["context"]
+              const {text, answer_start} = example["paragraphs"][0]["qas"][0]["answers"][0]
+              if (context.substring(answer_start, answer_start + text.length) === text){
+                pass += 1
+              } else {
+                fail += 1
+              }
+            })
+            setPassed(pass)
+            setFailed(fail)
+            setCountAnnotated(res["data"].length)
+          }
+        })
+      }
+    })
   }
 
   return (
@@ -157,9 +240,9 @@ function App() {
                   </thead>
                   <tbody>
                     <tr>
-                      <td>0</td>
-                      <td style={{color: "green"}}>0</td>
-                      <td style={{color: "red"}}>0</td>
+                      <td>{countAnnotated}</td>
+                      <td style={{color: "green"}}>{passed}</td>
+                      <td style={{color: "red"}}>{failed}</td>
                     </tr>
                   </tbody>
                 </table>
