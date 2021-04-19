@@ -3,6 +3,11 @@ import './App.css';
 import 'antd/dist/antd.css';
 import { Row, Col, Space, Progress, Button, Spin, message} from "antd"
 import axios from "axios"
+import storageUtil from "./util/storageUtil";
+import memoryUtil from "./util/memoryUtil"
+import uuidv4 from "./util/uuid"
+
+
 
 const data_json_server = "http://localhost:3001/data/"
 
@@ -19,6 +24,12 @@ function App() {
   } 
 
   useEffect(() => {
+    if (!storageUtil.getTmpKey()){
+      const uuid = uuidv4()
+      memoryUtil.tmp_key = uuid
+      storageUtil.saveTmpKey(memoryUtil)
+    }
+    memoryUtil.tmp_key = storageUtil.getTmpKey()
     setIsFetching(true)
     setProgressStatus(888)
     let randInt = Math.floor(Math.random() * 60000);
@@ -54,6 +65,32 @@ function App() {
     })
   }
 
+  const handleSubmit = () => {
+    const { question, plot, title, question_id, no_answer} = example
+    if (!answerSelected){
+      message.error("No answer selected.")
+      return
+    }
+    const payload = {
+      title,
+      "paragraphs": [
+        {
+          "context": plot,
+          "qas": [{
+            "answers": [{
+              "text": answerSelected,
+              "answer_start": plot.charAt(answerStartPos) === " " ? answerStartPos + 1 : answerStartPos
+            }],
+            question,
+            "id": question_id,
+            "is_impossible": no_answer
+          }]
+        }
+      ]
+    }
+    console.log(payload)
+  }
+
   return (
     <div className="App">
       <Spin spinning={isFetching}>
@@ -66,7 +103,7 @@ function App() {
                 format={percent => `${Math.floor(percent/100 * 1600)}/1600`}
                 strokeColor={{
                   '0%': '#1890FF',
-                  '100%': '#87d068',
+                  '100%': '#81b214',
                 }}
               />
             </div>
@@ -103,7 +140,7 @@ function App() {
                     <div className="answer-selected-header">Answer you selected</div>
                     <div>{answerSelected || "\"Select your answer in the plot...\""}</div>
                     <div className="answer-selected-submit-button">
-                      <Button style={{width: "100%"}} type="primary">Submit</Button>
+                      <Button style={{width: "100%"}} type="primary" onClick={() => handleSubmit()}>Submit</Button>
                     </div>
                   </div>
                 </Row>
@@ -114,18 +151,20 @@ function App() {
           <Row>
             <div className="annotation-status">
                 <table style={{width: "100%"}}>
-                  <tr>
-                    <th>Total</th>
-                    <th>Has Repeat</th>
-                    <th>Passed</th>
-                    <th>Failed</th>
-                  </tr>
-                  <tr>
-                    <td>0</td>
-                    <td>False</td>
-                    <td style={{color: "green"}}>0</td>
-                    <td style={{color: "red"}}>0</td>
-                  </tr>
+                  <thead>
+                    <tr>
+                      <th>Total</th>
+                      <th>Passed</th>
+                      <th>Failed</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>0</td>
+                      <td style={{color: "green"}}>0</td>
+                      <td style={{color: "red"}}>0</td>
+                    </tr>
+                  </tbody>
                 </table>
             </div>
           </Row>
