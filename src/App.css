@@ -55,6 +55,21 @@ table tbody tr.active-row {
   color: rgba(0, 0, 0, 0.5);
 }
 
+footer{
+  padding: 8px 0;
+}
+
+footer p{
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.6);
+}
+footer p::before {
+    content: open-quote;
+}
+footer p::after {
+    content: close-quote;
+}
+
 .App {
   padding: 20px 5%;
   text-align: center;

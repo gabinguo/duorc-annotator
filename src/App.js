@@ -272,10 +272,15 @@ function App() {
             </div>
           </Row>
           <div style={{textAlign: "end"}}>
-            <h3>{memoryUtil.tmp_key}</h3>
+            <h3>Key: {memoryUtil.tmp_key}</h3>
           </div>
         </Space>
       </Spin>
+      <footer>
+        <p>
+          Thanks for your contribution.
+        </p>
+      </footer>
     </div>
   );
 }
