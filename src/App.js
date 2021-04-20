@@ -8,11 +8,11 @@ import memoryUtil from "./util/memoryUtil"
 import uuidv4 from "./util/uuid"
 
 function App() {
-  const [progressStatus, setProgressStatus] = useState(888)
-  const [answerStartPos, setAnswerStartPos] = useState(-1)
   const [answerSelected, setAnswerSelected] = useState("")
   const [isFetching, setIsFetching] = useState(false)
   const [example, setExample] = useState({})
+  const [progressStatus, setProgressStatus] = useState(888)
+  const [answerStartPos, setAnswerStartPos] = useState(-1)
   const [countAnnotated, setCountAnnotated] = useState(0)
   const [passed, setPassed] = useState(0)
   const [failed, setFailed] = useState(0)
@@ -42,6 +42,14 @@ function App() {
     })
   }
 
+  const req_examples_by_tmp_key = (tmp_key) => {
+    return axios.get(`/annotations?user_id=${memoryUtil.tmp_key}`)
+  }
+
+  const req_examples = () => {
+    return axios.get('/annotations')
+  }
+
   useEffect(() => {
     if (!storageUtil.getTmpKey()){
       const uuid = uuidv4()
@@ -50,20 +58,33 @@ function App() {
     }
     memoryUtil.tmp_key = storageUtil.getTmpKey()
     setIsFetching(true)
-    let randInt = Math.floor(Math.random() * 60000);
+    req_examples().then(res => {
+      if (res){
+        const dataIds = res["data"].map(r => r["data_id"])
+        return dataIds
+      } 
+    }).then((dataIds) => {
+      if (dataIds){
+        while(true){
+          var randInt = Math.floor(Math.random() * 60000);
+          if (dataIds.indexOf(randInt) === -1) break;
+        }
+        req_single_example(randInt).then(res => {
+          if (res){
+            setExample(res["data"])
+            setIsFetching(false)
+          }
+        })
+      }
+    })
+
     req_overall_count().then(res => {
       if(res){
         setProgressStatus(res["data"]["count"])
       }
     })
-    req_single_example(randInt).then(res => {
-      if (res){
-        setExample(res["data"])
-        setIsFetching(false)
-      }
-    })
 
-    axios.get(`/annotations?user_id=${memoryUtil.tmp_key}`).then(res => {
+    req_examples_by_tmp_key(memoryUtil.tmp_key).then(res => {
       if(res){
         let pass = 0
         let fail = 0
@@ -81,6 +102,7 @@ function App() {
         setCountAnnotated(res["data"].length)
       }
     })
+
   }, [])
 
   const handleTextSelection = () => {
@@ -109,7 +131,7 @@ function App() {
   }
 
   const handleSubmit = () => {
-    const { question, plot, title, question_id, no_answer} = example
+    const { question, plot, title, question_id, no_answer, id} = example
     if (!answerSelected){
       message.error("No answer selected.")
       return
@@ -117,6 +139,7 @@ function App() {
     const payload = {
       title,
       "user_id": memoryUtil.tmp_key,
+      "data_id": id,
       "paragraphs": [
         {
           "context": plot,
@@ -248,6 +271,9 @@ function App() {
                 </table>
             </div>
           </Row>
+          <div style={{textAlign: "end"}}>
+            <h3>{memoryUtil.tmp_key}</h3>
+          </div>
         </Space>
       </Spin>
     </div>
