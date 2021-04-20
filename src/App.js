@@ -229,24 +229,26 @@ function App() {
             </Col>
             <Col flex="3">
               <div className="answers">
-                <Row style={{marginRight: 0}}>
-                  <div className="answer-in-dataset">
-                    <div className="answer-in-dataset-header">Answer in DuoRC</div>
-                    <div>{example["answers"] && example["answers"][0]}</div>
-                    <div className="answer-in-dataset-skip-button">
-                      <Button style={{width: "100%"}} type="primary" onClick={() => handleSkip()}>Skip</Button>
+                <div style={{height: "80%", position: "sticky", top: 20}}>
+                  <Row style={{marginRight: 0}}>
+                    <div className="answer-in-dataset">
+                      <div className="answer-in-dataset-header">Answer in DuoRC</div>
+                      <div>{example["answers"] && example["answers"][0]}</div>
+                      <div className="answer-in-dataset-skip-button">
+                        <Button style={{width: "100%"}} type="primary" onClick={() => handleSkip()}>Skip</Button>
+                      </div>
                     </div>
-                  </div>
-                </Row>
-                <Row style={{marginRight: 0}}>
-                  <div className="answer-selected">
-                    <div className="answer-selected-header">Answer you selected</div>
-                    <div>{answerSelected || "\"Select your answer in the plot...\""}</div>
-                    <div className="answer-selected-submit-button">
-                      <Button style={{width: "100%"}} type="primary" onClick={() => handleSubmit()}>Submit</Button>
+                  </Row>
+                  <Row style={{marginRight: 0}}>
+                    <div className="answer-selected">
+                      <div className="answer-selected-header">Answer you selected</div>
+                      <div>{answerSelected || "\"Select your answer in the plot...\""}</div>
+                      <div className="answer-selected-submit-button">
+                        <Button style={{width: "100%"}} type="primary" onClick={() => handleSubmit()}>Submit</Button>
+                      </div>
                     </div>
-                  </div>
-                </Row>
+                  </Row>
+                </div>
               </div>
             </Col>
           </Row>
