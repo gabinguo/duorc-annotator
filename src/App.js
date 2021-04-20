@@ -139,6 +139,7 @@ function App() {
     const { question, plot, title, question_id, no_answer, id} = example
     if (!answerSelected){
       message.error("No answer selected.")
+      setIsFetching(false)
       return
     }
     const payload = {
