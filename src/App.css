@@ -93,6 +93,9 @@ footer p::after {
 .main-title h1{
   margin: 2px;
   padding: 8px 0;
+  font-size: 36px;
+  font-weight: 700;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .content-display{

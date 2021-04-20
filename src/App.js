@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react"
+import React, {useState, useEffect, useRef} from "react"
 import './App.css';
 import 'antd/dist/antd.css';
 import { Row, Col, Space, Progress, Button, Spin, message, notification} from "antd"
@@ -16,6 +16,7 @@ function App() {
   const [countAnnotated, setCountAnnotated] = useState(0)
   const [passed, setPassed] = useState(0)
   const [failed, setFailed] = useState(0)
+  const progressBarRef = useRef(null)
 
 
   const req_single_example = (idx) => {
@@ -120,6 +121,9 @@ function App() {
   }
 
   const handleSkip = () => {
+    if (progressBarRef.current) {
+      progressBarRef.current.scrollIntoView({ "behavior": "smooth" })
+    }
     setIsFetching(true)
     req_single_example(Math.floor(Math.random() * 60000)).then(res => {
       if(res){
@@ -131,6 +135,7 @@ function App() {
   }
 
   const handleSubmit = () => {
+    setIsFetching(true)
     const { question, plot, title, question_id, no_answer, id} = example
     if (!answerSelected){
       message.error("No answer selected.")
@@ -164,14 +169,6 @@ function App() {
           description: "Succesfully added one annotation : )",
           placement: "bottomRight"
         })
-        setIsFetching(true)
-        req_single_example(Math.floor(Math.random() * 60000)).then(res => {
-          if(res){
-            setExample(res["data"])
-            setIsFetching(false)
-            setAnswerSelected("")
-          }
-        })
         axios.get(`/annotations?user_id=${memoryUtil.tmp_key}`).then(res => {
           if(res){
             let pass = 0
@@ -190,6 +187,16 @@ function App() {
             setCountAnnotated(res["data"].length)
           }
         })
+        req_single_example(Math.floor(Math.random() * 60000)).then(res => {
+          if(res){
+            setExample(res["data"])
+            setIsFetching(false)
+            setAnswerSelected("")
+            if (progressBarRef.current) {
+              progressBarRef.current.scrollIntoView({ "behavior": "smooth" })
+            }
+          }
+        })
       }
     })
   }
@@ -199,7 +206,7 @@ function App() {
       <Spin spinning={isFetching}>
         <Space direction="vertical" size="large" style={{width: "100%"}}>
           <Row>
-            <div className="progress-bar">
+            <div className="progress-bar" ref={progressBarRef}>
               <Progress 
                 status="active" 
                 percent={progressStatus/1600 * 100} 
@@ -212,7 +219,7 @@ function App() {
             </div>
           </Row>
           <Row>
-            <div className="main-title">
+            <div className="main-title" >
               <h1>DuoRC Annotator</h1>
             </div>
           </Row>
