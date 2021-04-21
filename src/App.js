@@ -7,6 +7,15 @@ import storageUtil from "./util/storageUtil";
 import memoryUtil from "./util/memoryUtil"
 import uuidv4 from "./util/uuid"
 
+
+const name_id_map = {
+  "c2c412f2-58aa-4b3b-bc16-54b6c552b392": "Dennis",
+  "16595f2f-69b4-4262-a52d-b4d86c93fa25": "Guo",
+  "703e7f60-3d35-48d0-b787-1ce3f7c078a6": "Guo",
+  "0a34f39b-235e-4881-85af-8ba19870dd24": "Guo",
+  "d53fb0e3-5b28-4064-b6e5-4aefe269fe69": "Guo"
+}
+
 function App() {
   const [answerSelected, setAnswerSelected] = useState("")
   const [isFetching, setIsFetching] = useState(false)
@@ -190,11 +199,11 @@ function App() {
           description: "Succesfully added one annotation : )",
           placement: "bottomRight"
         })
-        axios.get(`/annotations?user_id=${memoryUtil.tmp_key}`).then(res => {
-          if (res) {
+        axios.get(`/annotations?user_id=${memoryUtil.tmp_key}`).then(res_tmp_key => {
+          if (res_tmp_key) {
             let pass = 0
             let fail = 0
-            res["data"].forEach(example => {
+            res_tmp_key["data"].forEach(example => {
               const context = example["paragraphs"][0]["context"]
               const { text, answer_start } = example["paragraphs"][0]["qas"][0]["answers"][0]
               if (context.substring(answer_start, answer_start + text.length) === text) {
@@ -205,7 +214,7 @@ function App() {
             })
             setPassed(pass)
             setFailed(fail)
-            setCountAnnotated(res["data"].length)
+            setCountAnnotated(res_tmp_key["data"].length)
           }
         })
         req_single_example(Math.floor(Math.random() * 60000)).then(res_single => {
@@ -354,8 +363,8 @@ function App() {
               <thead>
                 <tr>
                   <th>Rank</th>
-                  <th>key</th>
-                  <th>total</th>
+                  <th>Key/Name</th>
+                  <th>Total</th>
                 </tr>
               </thead>
               <tbody>
@@ -363,7 +372,7 @@ function App() {
                   return (
                     <tr>
                       <td>{index + 1}</td>
-                      <td>{info["key"]}</td>
+                      <td>{name_id_map[info["key"]]}</td>
                       <td style={{ color: "green" }}>{info["score"]}</td>
                     </tr>
                   )
