@@ -227,11 +227,7 @@ function App() {
             }
           }
         })
-        return res
-      }
-    }).then(pass_res => {
-      if (pass_res) {
-        req_examples(res_all => {
+        req_examples().then(res_all => {
           if (res_all) {
             const user_ids = res_all["data"].map(r => r["user_id"])
             const occurence_map = user_ids.reduce((acc, curr) => {
