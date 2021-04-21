@@ -249,7 +249,7 @@ function App() {
                 score: occurence_map[key]
               })
             })
-            setLeaderboard(leaderboard)
+            setLeaderboard([...leaderboard])
           }
         })
       }
