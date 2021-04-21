@@ -242,14 +242,14 @@ function App() {
               }
               return acc
             }, {})
-            const leaderboard = []
+            var tmp_leaderboard = []
             Object.keys(occurence_map).sort(function (a, b) { return occurence_map[b] - occurence_map[a] }).forEach(key => {
-              leaderboard.push({
+              tmp_leaderboard.push({
                 key,
                 score: occurence_map[key]
               })
             })
-            setLeaderboard([...leaderboard])
+            setLeaderboard([...tmp_leaderboard])
           }
         })
       }
