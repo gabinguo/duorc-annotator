@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from "react"
 import './App.css';
 import 'antd/dist/antd.css';
-import { Row, Col, Space, Progress, Button, Spin, message, notification} from "antd"
+import { Row, Col, Space, Progress, Button, Spin, message, notification, Modal } from "antd"
 import axios from "axios"
 import storageUtil from "./util/storageUtil";
 import memoryUtil from "./util/memoryUtil"
@@ -10,13 +10,16 @@ import uuidv4 from "./util/uuid"
 function App() {
   const [answerSelected, setAnswerSelected] = useState("")
   const [isFetching, setIsFetching] = useState(false)
+  const [showLeaderboard, setShowLeaderboard] = useState(false)
   const [example, setExample] = useState({})
+  const [leaderboard, setLeaderboard] = useState([])
   const [progressStatus, setProgressStatus] = useState(888)
   const [answerStartPos, setAnswerStartPos] = useState(-1)
   const [countAnnotated, setCountAnnotated] = useState(0)
   const [passed, setPassed] = useState(0)
   const [failed, setFailed] = useState(0)
   const progressBarRef = useRef(null)
+  
 
 
   const req_single_example = (idx) => {
@@ -62,6 +65,23 @@ function App() {
     req_examples().then(res => {
       if (res){
         const dataIds = res["data"].map(r => r["data_id"])
+        const user_ids = res["data"].map(r => r["user_id"])
+        const occurence_map = user_ids.reduce((acc, curr) => {
+          if (typeof acc[curr] === "undefined"){
+            acc[curr] = 1
+          }else{
+            acc[curr] += 1
+          }
+          return acc
+        }, {})
+        const leaderboard = []
+        Object.keys(occurence_map).sort(function(a,b){return occurence_map[b]-occurence_map[a]}).forEach(key => {
+          leaderboard.push({
+            key,
+            score: occurence_map[key]
+          })
+        })
+        setLeaderboard(leaderboard)
         return dataIds
       } 
     }).then((dataIds) => {
@@ -201,6 +221,34 @@ function App() {
     })
   }
 
+  const leaderboardComponent = (
+    <Row>
+        <div className="annotation-status" style={{textAlign: "center"}}>
+          <h1>Leaderboard</h1>
+            <table style={{width: "100%"}}>
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>key</th>
+                  <th>total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {leaderboard.map((info, index) => {
+                  return (
+                    <tr>
+                      <td>{index+1}</td>
+                      <td>{info["key"]}</td>
+                      <td style={{color: "green"}}>{info["score"]}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+        </div>
+    </Row>
+  )
+
   return (
     <div className="App">
       <Spin spinning={isFetching}>
@@ -259,6 +307,7 @@ function App() {
               </div>
             </Col>
           </Row>
+
           
           <Row>
             <div className="annotation-status">
@@ -286,10 +335,21 @@ function App() {
         </Space>
       </Spin>
       <footer>
-        <p>
-          Thanks for your contribution.
-        </p>
+          <p onClick={() => setShowLeaderboard(!showLeaderboard)}>
+            Thanks for your contribution.
+          </p>
       </footer>
+      <Modal 
+        visible={showLeaderboard} 
+        onCancel={() => setShowLeaderboard(false)} 
+        onOk={() => setShowLeaderboard(false)}
+        okButtonProps={{style: {display: "none"}}}
+        cancelButtonProps={{style: {display: "none"}}}
+        closable={false}
+        width={800}
+      >
+        {leaderboardComponent}
+      </Modal>
     </div>
   );
 }
