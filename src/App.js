@@ -16,6 +16,8 @@ const name_id_map = {
   "d53fb0e3-5b28-4064-b6e5-4aefe269fe69": "Guo"
 }
 
+const god_mode = ["16595f2f-69b4-4262-a52d-b4d86c93fa25", "16595f2f-69b4-4262-a52d-b4d86c93fa25"]
+
 function App() {
   const [answerSelected, setAnswerSelected] = useState("")
   const [isFetching, setIsFetching] = useState(false)
@@ -339,7 +341,7 @@ function App() {
         </Space>
       </Spin>
       <footer>
-        <p onClick={() => setShowLeaderboard(!showLeaderboard)}>
+        <p onClick={() => setShowLeaderboard(god_mode.indexOf(memoryUtil.tmp_key) !== -1 ? true : false)}>
           Thanks for your contribution.
           </p>
       </footer>
