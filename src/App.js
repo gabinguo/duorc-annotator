@@ -208,14 +208,39 @@ function App() {
             setCountAnnotated(res["data"].length)
           }
         })
-        req_single_example(Math.floor(Math.random() * 60000)).then(res => {
-          if(res){
-            setExample(res["data"])
+        req_single_example(Math.floor(Math.random() * 60000)).then(res_single => {
+          if(res_single){
+            setExample(res_single["data"])
             setIsFetching(false)
             setAnswerSelected("")
             if (progressBarRef.current) {
               progressBarRef.current.scrollIntoView({ "behavior": "smooth" })
             }
+          }
+        })
+        return res
+      }
+    }).then(res => {
+      if(res){
+        req_examples(res_all => {
+          if (res_all){
+            const user_ids = res_all["data"].map(r => r["user_id"])
+            const occurence_map = user_ids.reduce((acc, curr) => {
+              if (typeof acc[curr] === "undefined"){
+                acc[curr] = 1
+              }else{
+                acc[curr] += 1
+              }
+              return acc
+            }, {})
+            const leaderboard = []
+            Object.keys(occurence_map).sort(function(a,b){return occurence_map[b]-occurence_map[a]}).forEach(key => {
+              leaderboard.push({
+                key,
+                score: occurence_map[key]
+              })
+            })
+            setLeaderboard(leaderboard)
           }
         })
       }
