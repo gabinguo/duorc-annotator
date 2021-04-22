@@ -39,10 +39,6 @@ function App() {
     return axios.get(`/data/${idx}`)
   }
 
-  const req_overall_count = () => {
-    return axios.get("/overview")
-  }
-
   const send_single_example = (payload) => {
     return axios.post("/annotations", JSON.stringify(payload), {
       headers: {
@@ -102,12 +98,6 @@ function App() {
             setIsFetching(false)
           }
         })
-      }
-    })
-
-    req_overall_count().then(res => {
-      if (res) {
-        setProgressStatus(res["data"]["count"])
       }
     })
 
