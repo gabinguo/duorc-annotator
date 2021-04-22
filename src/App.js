@@ -14,7 +14,9 @@ const name_id_map = {
   "417d258e-1614-4098-bf3c-dfbe07f733f4": "Clément",
   "19a37fb8-61ae-4a66-a8f0-ba3bd684a2b6": "Pierre",
   "ea2c4fc5-eb3b-45d4-8d29-c12bfeb11659": "Ali",
-  "a5e2d773-4924-4de7-9399-d5e52343461d": "Jonathan"
+  "a5e2d773-4924-4de7-9399-d5e52343461d": "Jonathan",
+  "missing": "Dayanth",
+  "null": "Rediet"
 }
 
 
@@ -354,31 +356,33 @@ function App() {
         closable={false}
         width={800}
       >
-        <Row>
-          <div className="annotation-status" style={{ textAlign: "center" }}>
-            <h1>Leaderboard</h1>
-            <table style={{ width: "100%" }}>
-              <thead>
-                <tr>
-                  <th>Rank</th>
-                  <th>Key/Name</th>
-                  <th>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {leaderboard.map((info, index) => {
-                  return (
-                    <tr>
-                      <td>{index + 1}</td>
-                      <td>{name_id_map[info["key"]] || info["key"]}</td>
-                      <td style={{ color: "green" }}>{info["score"]}</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        </Row>
+        <Spin spinning={isFetching}>
+          <Row>
+            <div className="annotation-status" style={{ textAlign: "center" }}>
+              <h1>Leaderboard</h1>
+              <table style={{ width: "100%" }}>
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Key/Name</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {leaderboard.map((info, index) => {
+                    return (
+                      <tr>
+                        <td>{index + 1}</td>
+                        <td>{name_id_map[info["key"]] || info["key"]}</td>
+                        <td style={{ color: "green" }}>{info["score"]}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </Row>
+        </Spin>
       </Modal>
     </div>
   );
