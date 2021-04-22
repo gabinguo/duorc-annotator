@@ -43,14 +43,6 @@ function App() {
     return axios.get("/overview")
   }
 
-  const update_overall_count = (count) => {
-    return axios.post("/overview", JSON.stringify({ "count": count }), {
-      "headers": {
-        "Content-Type": "application/json"
-      }
-    })
-  }
-
   const send_single_example = (payload) => {
     return axios.post("/annotations", JSON.stringify(payload), {
       headers: {
@@ -77,6 +69,7 @@ function App() {
     setIsFetching(true)
     req_examples().then(res => {
       if (res) {
+        setProgressStatus(res["data"].length)
         const dataIds = res["data"].map(r => r["data_id"])
         const user_ids = res["data"].map(r => r["user_id"])
         const occurence_map = user_ids.reduce((acc, curr) => {
@@ -196,7 +189,6 @@ function App() {
     }
     send_single_example(payload).then(res => {
       if (res) {
-        update_overall_count(progressStatus + 1)
         setProgressStatus(progressStatus + 1)
         notification.success({
           message: "Congratulations 🎉",
@@ -233,6 +225,7 @@ function App() {
         })
         req_examples().then(res_all => {
           if (res_all) {
+            setProgressStatus(res_all["data"].length)
             const user_ids = res_all["data"].map(r => r["user_id"])
             const occurence_map = user_ids.reduce((acc, curr) => {
               if (typeof acc[curr] === "undefined") {
