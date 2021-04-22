@@ -1,13 +1,15 @@
+// import packages
 import React, { useState, useEffect, useRef } from "react"
-import './App.css';
-import 'antd/dist/antd.css';
 import { Row, Col, Space, Progress, Button, Spin, message, notification, Modal } from "antd"
 import axios from "axios"
-import storageUtil from "./util/storageUtil";
-import memoryUtil from "./util/memoryUtil"
-import uuidv4 from "./util/uuid"
+
+// import packages (locally)
+import {storageUtil, memoryUtil, uuidv4} from "./util"
+import './App.css';
+import 'antd/dist/antd.css';
 
 
+// name <=> key map to display on the leaderboard
 const name_id_map = {
   "c2c412f2-58aa-4b3b-bc16-54b6c552b392": "Dennis",
   "16595f2f-69b4-4262-a52d-b4d86c93fa25": "Guo",
