@@ -14,7 +14,8 @@ const name_id_map = {
   "703e7f60-3d35-48d0-b787-1ce3f7c078a6": "Guo",
   "0a34f39b-235e-4881-85af-8ba19870dd24": "Guo",
   "d53fb0e3-5b28-4064-b6e5-4aefe269fe69": "Guo",
-  "417d258e-1614-4098-bf3c-dfbe07f733f4": "Clément"
+  "417d258e-1614-4098-bf3c-dfbe07f733f4": "Clément",
+  "19a37fb8-61ae-4a66-a8f0-ba3bd684a2b6": "Pierre"
 }
 
 const god_mode = ["16595f2f-69b4-4262-a52d-b4d86c93fa25", "16595f2f-69b4-4262-a52d-b4d86c93fa25"]
