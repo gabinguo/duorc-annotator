@@ -6,24 +6,13 @@ import axios from "axios"
 import storageUtil from "./util/storageUtil";
 import memoryUtil from "./util/memoryUtil"
 import uuidv4 from "./util/uuid"
-
-
-const name_id_map = {
-  "c2c412f2-58aa-4b3b-bc16-54b6c552b392": "Dennis",
-  "16595f2f-69b4-4262-a52d-b4d86c93fa25": "Guo",
-  "417d258e-1614-4098-bf3c-dfbe07f733f4": "Clément",
-  "19a37fb8-61ae-4a66-a8f0-ba3bd684a2b6": "Pierre",
-  "ea2c4fc5-eb3b-45d4-8d29-c12bfeb11659": "Ali",
-  "a5e2d773-4924-4de7-9399-d5e52343461d": "Jonathan",
-  "missing": "Dayanth",
-  "null": "Rediet"
-}
+import {name_id_map, app_info} from "./config"
 
 
 function App() {
   const [answerSelected, setAnswerSelected] = useState("")
   const [isFetching, setIsFetching] = useState(false)
-  const [showLeaderboard, setShowLeaderboard] = useState(true)
+  const [showLeaderboard, setShowLeaderboard] = useState(app_info["default_show_leaderboard"])
   const [example, setExample] = useState({})
   const [leaderboard, setLeaderboard] = useState([])
   const [progressStatus, setProgressStatus] = useState(888)
@@ -248,8 +237,8 @@ function App() {
             <div className="progress-bar" ref={progressBarRef}>
               <Progress
                 status="active"
-                percent={progressStatus / 1600 * 100}
-                format={percent => `${Math.floor(percent / 100 * 1600)}/1600`}
+                percent={progressStatus / app_info["target"] * 100}
+                format={percent => `${Math.floor(percent / 100 * app_info["target"])}/${app_info["target"]}`}
                 strokeColor={{
                   '0%': '#1890FF',
                   '100%': '#81b214',
@@ -259,7 +248,7 @@ function App() {
           </Row>
           <Row>
             <div className="main-title" >
-              <h1>DuoRC Annotator</h1>
+              <h1>{app_info["title"]}</h1>
             </div>
           </Row>
 
@@ -278,7 +267,7 @@ function App() {
                 <div style={{ height: "80%", position: "sticky", top: 20 }}>
                   <Row style={{ marginRight: 0 }}>
                     <div className="answer-in-dataset">
-                      <div className="answer-in-dataset-header">Answer in DuoRC</div>
+                      <div className="answer-in-dataset-header">Answer in dataset</div>
                       <div>{example["answers"] && example["answers"][0]}</div>
                       <div className="answer-in-dataset-skip-button">
                         <Button style={{ width: "100%" }} type="primary" onClick={() => handleSkip()}>Skip</Button>
