@@ -1,11 +1,12 @@
+// import packages
 import React, { useState, useEffect, useRef } from "react"
-import './App.css';
-import 'antd/dist/antd.css';
 import { Row, Col, Space, Progress, Button, Spin, message, notification, Modal } from "antd"
 import axios from "axios"
-import storageUtil from "./util/storageUtil";
-import memoryUtil from "./util/memoryUtil"
-import uuidv4 from "./util/uuid"
+
+// import packages (locally)
+import {storageUtil, memoryUtil, uuidv4} from "./util"
+import './App.css';
+import 'antd/dist/antd.css';
 import {name_id_map, app_info} from "./config"
 
 

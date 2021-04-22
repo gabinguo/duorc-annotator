@@ -1,3 +1,4 @@
+// name <=> key map to display on the leaderboard
 export const name_id_map = {
     "c2c412f2-58aa-4b3b-bc16-54b6c552b392": "Dennis",
     "16595f2f-69b4-4262-a52d-b4d86c93fa25": "Guo",
