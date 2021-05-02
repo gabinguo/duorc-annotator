@@ -346,7 +346,7 @@ function App() {
                     return (
                       <tr>
                         <td>{index + 1}</td>
-                        <td>{name_id_map[info["key"]] || info["key"]}</td>
+                        <td>{name_id_map[info["key"]] || info["key"]}<br/>{name_id_map[info["key"]] && info["key"]}</td>
                         <td style={{ color: "green" }}>{info["score"]}</td>
                       </tr>
                     )
